@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VITALMAR — Tienda VitalHealth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =========================================================
+       TOKENS Y VARIABLES GLOBALES
+    ========================================================= */
+    :root {
+      --bg:        #F5FBF7;
+      --surface:   #FFFFFF;
+      --border:    #D7EBDD;
+      --text-1:    #123524;
+      --text-2:    #4D665A;
+      --text-3:    #7D9488;
+      --accent:    #009B3A;       /* verde corporativo VitalHealth */
+      --accent-dk: #007A2E;
+      --accent-lt: #E3F7EA;
+      --success:   #009B3A;
+      --radius:    4px;
+      --radius-lg: 10px;
+      --shadow:    0 2px 16px rgba(0,0,0,.07);
+      --shadow-lg: 0 8px 40px rgba(0,0,0,.13);
+      --cart-w:    420px;
+      --transition: .25s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* =========================================================
+       RESET
+    ========================================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-1);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    img { display: block; width: 100%; }
+    button { cursor: pointer; font-family: inherit; border: none; background: none; }
+    a { text-decoration: none; color: inherit; }
+
+    /* =========================================================
+       CABECERA / NAVBAR
+    ========================================================= */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(248,247,245,.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.55rem;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    .nav-logo span { color: var(--accent); }
+
+    /* Botón del carrito */
+    .cart-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border: 1.5px solid var(--text-1);
+      border-radius: 100px;
+      font-size: .82rem;
+      font-weight: 500;
+      letter-spacing: .04em;
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+    }
+    .cart-btn:hover {
+      background: var(--text-1);
+      color: var(--bg);
+    }
+    .cart-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: .7rem;
+      font-weight: 500;
+      transition: transform var(--transition);
+    }
+    .cart-count.bump { animation: bump .35s ease; }
+    @keyframes bump {
+      0%   { transform: scale(1);   }
+      40%  { transform: scale(1.45); }
+      100% { transform: scale(1);   }
+    }
+
+    /* =========================================================
+       HERO / BANNER
+    ========================================================= */
+    .hero {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 72px 24px 56px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .hero-text h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.6rem, 5vw, 4.2rem);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -.01em;
+      margin-bottom: 20px;
+    }
+    .hero-text h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .hero-text p {
+      font-size: 1rem;
+      color: var(--text-2);
+      line-height: 1.7;
+      max-width: 400px;
+      margin-bottom: 32px;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      background: var(--text-1);
+      color: var(--bg);
+      border-radius: 100px;
+      font-size: .88rem;
+      font-weight: 500;
+      letter-spacing: .05em;
+      transition: background var(--transition), transform var(--transition);
+    }
+    .hero-cta:hover { background: var(--accent); transform: translateY(-1px); }
+    .hero-cta svg { transition: transform var(--transition); }
+    .hero-cta:hover svg { transform: translateX(4px); }
+    .hero-image {
+      aspect-ratio: 4/3;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--border);
+    }
+    .hero-image img { height: 100%; object-fit: cover; transition: transform .6s ease; }
+    .hero-image:hover img { transform: scale(1.04); }
+
+    /* =========================================================
+       FILTROS
+    ========================================================= */
+    .filters-wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px 32px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .filters-label {
+      font-size: .78rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-right: 6px;
+    }
+    .filter-btn {
+      padding: 7px 18px;
+      border: 1.5px solid var(--border);
+      border-radius: 100px;
+      font-size: .8rem;
+      font-weight: 400;
+      color: var(--text-2);
+      background: var(--surface);
+      transition: all var(--transition);
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--text-1);
+      color: var(--text-1);
+      background: var(--text-1);
+      color: var(--bg);
+    }
+
+    /* =========================================================
+       GRID DE PRODUCTOS
+    ========================================================= */
+    .catalog-section {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 32px;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 400;
+    }
+    .section-count {
+      font-size: .8rem;
+      color: var(--text-3);
+      letter-spacing: .05em;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 28px;
+    }
+
+    /* ---- Tarjeta de producto ---- */
+    .product-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+      border: 1px solid var(--border);
+      transition: box-shadow var(--transition), transform var(--transition);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+    }
+
+    /* Imagen */
+    .product-image-wrap {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 1 / 1;
+      background: var(--bg);
+    }
+    .product-image-wrap img {
+      height: 100%;
+      object-fit: cover;
+      transition: transform .5s ease;
+    }
+    .product-card:hover .product-image-wrap img { transform: scale(1.06); }
+
+    /* Badge de oferta */
+    .badge-offer {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: var(--accent);
+      color: #fff;
+      font-size: .7rem;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 100px;
+      letter-spacing: .04em;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .badge-new {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--text-1);
+      color: var(--bg);
+      font-size: .68rem;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 100px;
+      letter-spacing: .06em;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Información textual */
+    .product-info {
+      padding: 18px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+    .product-category {
+      font-size: .7rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .product-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 500;
+      line-height: 1.25;
+      color: var(--text-1);
+    }
+    .product-desc {
+      font-size: .8rem;
+      color: var(--text-2);
+      line-height: 1.55;
+    }
+    .product-pricing {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .price-sale {
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--accent);
+    }
+    .price-original {
+      font-size: .88rem;
+      color: var(--text-3);
+      text-decoration: line-through;
+    }
+    .price-regular {
+      font-size: 1.15rem;
+      font-weight: 500;
+    }
+
+    /* Botón agregar al carrito */
+    .btn-add {
+      margin: 0 18px 18px;
+      padding: 12px 0;
+      background: var(--text-1);
+      color: var(--bg);
+      border-radius: var(--radius);
+      font-size: .82rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background var(--transition), transform var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-add::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+      transform: translateY(100%);
+      transition: transform var(--transition);
+    }
+    .btn-add:hover::after { transform: translateY(0); }
+    .btn-add span, .btn-add svg { position: relative; z-index: 1; }
+    .btn-add.added {
+      background: var(--success);
+      pointer-events: none;
+    }
+    .btn-add.added::after { background: var(--success); transform: translateY(0); }
+
+    /* Producto sin stock */
+    .product-card.out-of-stock .btn-add {
+      background: var(--border);
+      color: var(--text-3);
+      pointer-events: none;
+    }
+    .product-card.out-of-stock .product-image-wrap::after {
+      content: 'Agotado';
+      position: absolute;
+      inset: 0;
+      background: rgba(248,247,245,.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .85rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-2);
+    }
+
+    /* =========================================================
+       OVERLAY DEL CARRITO
+    ========================================================= */
+    .cart-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(17,17,16,.4);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition);
+      backdrop-filter: blur(2px);
+    }
+    .cart-overlay.open { opacity: 1; pointer-events: all; }
+
+    /* Panel lateral del carrito */
+    .cart-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(var(--cart-w), 100vw);
+      height: 100%;
+      background: var(--surface);
+      z-index: 210;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform .35s cubic-bezier(.4,0,.2,1);
+      box-shadow: -8px 0 40px rgba(0,0,0,.12);
+    }
+    .cart-panel.open { transform: translateX(0); }
+
+    /* Cabecera del carrito */
+    .cart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 28px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .cart-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 400;
+    }
+    .cart-close {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      transition: all var(--transition);
+    }
+    .cart-close:hover { background: var(--text-1); color: var(--bg); border-color: var(--text-1); }
+
+    /* Lista de ítems */
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 28px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    /* Estado vacío */
+    .cart-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      height: 100%;
+      color: var(--text-3);
+      text-align: center;
+    }
+    .cart-empty svg { opacity: .3; }
+    .cart-empty p { font-size: .9rem; }
+
+    /* Ítem individual */
+    .cart-item {
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      animation: slideIn .25s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .cart-item-img {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--bg);
+      flex-shrink: 0;
+    }
+    .cart-item-img img { height: 100%; object-fit: cover; }
+    .cart-item-name {
+      font-size: .9rem;
+      font-weight: 500;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    .cart-item-price {
+      font-size: .82rem;
+      color: var(--text-2);
+    }
+    .qty-ctrl {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-top: 8px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      width: fit-content;
+      overflow: hidden;
+    }
+    .qty-btn {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      line-height: 1;
+      color: var(--text-2);
+      background: var(--surface);
+      transition: background var(--transition), color var(--transition);
+    }
+    .qty-btn:hover { background: var(--text-1); color: var(--bg); }
+    .qty-num {
+      width: 32px;
+      text-align: center;
+      font-size: .82rem;
+      font-weight: 500;
+      border-left: 1.5px solid var(--border);
+      border-right: 1.5px solid var(--border);
+    }
+    .item-remove {
+      align-self: flex-start;
+      margin-top: 2px;
+      color: var(--text-3);
+      transition: color var(--transition);
+      padding: 4px;
+    }
+    .item-remove:hover { color: var(--accent); }
+
+    /* Pie del carrito */
+    .cart-footer {
+      padding: 20px 28px 28px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .cart-subtotal {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .subtotal-label {
+      font-size: .82rem;
+      color: var(--text-2);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .subtotal-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    /* Selector de método de pago */
+    .payment-group label {
+      font-size: .78rem;
+      color: var(--text-2);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .payment-options {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .pay-opt {
+      flex: 1;
+      min-width: 80px;
+      padding: 9px 8px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-size: .78rem;
+      text-align: center;
+      font-weight: 500;
+      color: var(--text-2);
+      background: var(--surface);
+      transition: all var(--transition);
+    }
+    .pay-opt.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-lt);
+    }
+    .pay-opt:hover { border-color: var(--text-2); }
+
+    /* Botón de checkout */
+    .btn-checkout {
+      width: 100%;
+      padding: 16px;
+      background: #25D366; /* verde WhatsApp */
+      color: #fff;
+      border-radius: var(--radius);
+      font-size: .88rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+    }
+    .btn-checkout:hover {
+      background: #1ebe5b;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(37,211,102,.35);
+    }
+    .btn-checkout:disabled {
+      background: var(--border);
+      color: var(--text-3);
+      pointer-events: none;
+      box-shadow: none;
+    }
+
+    /* =========================================================
+       TOAST NOTIFICATION
+    ========================================================= */
+    .toast-wrap {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast {
+      background: var(--text-1);
+      color: var(--bg);
+      padding: 12px 22px;
+      border-radius: 100px;
+      font-size: .82rem;
+      font-weight: 400;
+      letter-spacing: .04em;
+      white-space: nowrap;
+      animation: toastIn .3s ease forwards;
+    }
+    .toast.out { animation: toastOut .3s ease forwards; }
+    @keyframes toastIn  { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes toastOut { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(8px); } }
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+    .footer-copy {
+      font-size: .75rem;
+      color: var(--text-3);
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 48px 20px 36px;
+        gap: 32px;
+      }
+      .hero-image { display: none; }
+    }
+    @media (max-width: 600px) {
+      .nav-inner { padding: 0 16px; }
+      .products-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+      .product-info { padding: 12px 12px 10px; }
+      .btn-add { margin: 0 12px 12px; padding: 11px 0; }
+      .catalog-section { padding: 0 16px 60px; }
+      .filters-wrap { padding: 0 16px 24px; }
+      .cart-header { padding: 20px 20px 16px; }
+      .cart-items { padding: 12px 20px; }
+      .cart-footer { padding: 16px 20px 24px; }
+    }
+    @media (max-width: 380px) {
+      .products-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =====================================================
+       BARRA DE NAVEGACIÓN
+  ====================================================== -->
+  <header>
+    <nav class="nav-inner">
+      <!-- 🔧 PERSONALIZA: Cambia el nombre de tu tienda aquí -->
+      <div class="nav-logo" id="store-name-nav">MÍNIMA<span>.</span></div>
+      <button class="cart-btn" id="open-cart" aria-label="Abrir carrito">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        Carrito
+        <span class="cart-count" id="cart-count">0</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- =====================================================
+       HERO BANNER
+  ====================================================== -->
+  <section class="hero" id="hero-section">
+    <div class="hero-text">
+      <!-- El JS inyecta aquí el contenido del storeConfig.hero -->
+      <h1 id="hero-title">Cargando…</h1>
+      <p id="hero-subtitle"></p>
+      <a href="#catalogo" class="hero-cta">
+        Ver catálogo
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
+    </div>
+    <div class="hero-image">
+      <img id="hero-image" src="" alt="Hero" loading="eager" />
+    </div>
+  </section>
+
+  <!-- =====================================================
+       FILTROS POR CATEGORÍA
+  ====================================================== -->
+  <div class="filters-wrap" id="filters-wrap">
+    <span class="filters-label">Filtrar:</span>
+    <!-- Los filtros se generan dinámicamente según las categorías del JSON -->
+  </div>
+
+  <!-- =====================================================
+       CATÁLOGO DE PRODUCTOS
+  ====================================================== -->
+  <main class="catalog-section" id="catalogo">
+    <div class="section-header">
+      <h2 class="section-title">Catálogo VitalHealth</h2>
+      <span class="section-count" id="product-count"></span>
+    </div>
+    <div class="products-grid" id="products-grid">
+      <!-- Las tarjetas se generan dinámicamente desde el JSON -->
+    </div>
+  </main>
+
+  <!-- =====================================================
+       FOOTER
+  ====================================================== -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo" id="store-name-footer">MÍNIMA.</div>
+      <p class="footer-copy" id="footer-copy">© 2025 · Todos los derechos reservados</p>
+    </div>
+  </footer>
+
+  <!-- =====================================================
+       OVERLAY + PANEL DEL CARRITO
+  ====================================================== -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart-panel" id="cart-panel" role="dialog" aria-label="Carrito de compras">
+    <div class="cart-header">
+      <h2 class="cart-title">Tu carrito</h2>
+      <button class="cart-close" id="close-cart" aria-label="Cerrar carrito">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="cart-items" id="cart-items">
+      <!-- Los ítems se renderizan dinámicamente -->
+    </div>
+
+    <div class="cart-footer" id="cart-footer" style="display:none">
+      <div class="cart-subtotal">
+        <span class="subtotal-label">Total</span>
+        <span class="subtotal-value" id="cart-total">S/ 0.00</span>
+      </div>
+
+      <!-- Método de pago -->
+      <div class="payment-group">
+        <label>Método de pago</label>
+        <div class="payment-options" id="payment-options">
+          <!-- Se generan desde el JSON -->
+        </div>
+      </div>
+
+      <button class="btn-checkout" id="btn-checkout">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+          <path d="M13.507.003C6.065-.063.003 5.963.003 13.412c0 2.366.618 4.587 1.7 6.519L0 24l4.225-1.676a13.347 13.347 0 006.296 1.577c7.452 0 13.5-6.056 13.5-13.5C24.02 5.957 19.047.073 13.507.003zm-.01 24.674a11.077 11.077 0 01-5.65-1.545l-.405-.24-4.197 1.665 1.363-4.115-.263-.422A11.074 11.074 0 012.27 13.5c0-6.174 5.022-11.196 11.195-11.196 5.98 0 10.845 4.864 10.845 10.845 0 6.173-5.02 11.195-11.195 11.195z"/>
+        </svg>
+        Pedir por WhatsApp
+      </button>
+    </div>
+  </aside>
+
+  <!-- =====================================================
+       CONTENEDOR DE TOASTS
+  ====================================================== -->
+  <div class="toast-wrap" id="toast-wrap"></div>
+
+  <!-- =====================================================
+       JAVASCRIPT PRINCIPAL
+  ====================================================== -->
+  <script>
+  "use strict";
+
+  /* ============================================================
+     ██████╗  █████╗ ████████╗ █████╗ ███████╗
+     ██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗██╔════╝
+     ██║  ██║███████║   ██║   ███████║███████╗
+     ██║  ██║██╔══██║   ██║   ██╔══██║╚════██║
+     ██████╔╝██║  ██║   ██║   ██║  ██║███████║
+     ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝
+
+     EDITA SOLO ESTA SECCIÓN PARA ACTUALIZAR TU TIENDA
+  ============================================================ */
+
+  /**
+   * storeConfig — Configuración global de la tienda
+   * -------------------------------------------------
+   * Cambia name, whatsapp, hero y paymentMethods a gusto.
+   * Los métodos de pago se mostrarán como opciones al checkout.
+   */
+  const storeConfig = {
+    "name": "VITALMAR",
+    "whatsapp": "51925340320",
+    "currency": "S/",
+    "hero": {
+        "title": "Bienestar VitalHealth en <em>VITALMAR</em>.",
+        "subtitle": "Catálogo oficial de productos VitalHealth con precios para cliente. Compra fácil y finaliza tu pedido por WhatsApp.",
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23009B3A%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23009B3A%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23009B3A%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23009B3A%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23009B3A%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3ECat%C3%A1logo%20VitalHealth%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23009B3A%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E2026%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E"
+    },
+    "paymentMethods": [
+        "Yape",
+        "Plin",
+        "Transferencia",
+        "Efectivo"
+    ],
+    "footerText": "© 2026 VITALMAR · Distribuidor de productos VitalHealth · WhatsApp: +51 925 340 320 / 961 976 150"
+};
+
+  /**
+   * products — Catálogo de productos
+   * ---------------------------------
+   * Agrega, edita o elimina objetos de este array para
+   * actualizar tu tienda. No necesitas tocar el HTML ni el CSS.
+   *
+   * Campos disponibles:
+   *   id          {string}  Identificador único (cualquier valor único)
+   *   name        {string}  Nombre del producto
+   *   category    {string}  Categoría (se usa para los filtros)
+   *   description {string}  Descripción breve (opcional)
+   *   price       {number}  Precio regular (o precio tachado si hay oferta)
+   *   salePrice   {number|null} Precio de oferta. null = sin oferta
+   *   image       {string}  URL de la imagen
+   *   badge       {string|null} Etiqueta extra: "NUEVO", "HOT", etc. null = sin badge
+   *   inStock     {boolean} true = disponible, false = agotado
+   */
+  const products = [
+    {
+        "id": "vh001",
+        "name": "V-DETOX X1",
+        "category": "Desintoxica",
+        "description": "Producto VitalHealth · presentación 8G. Línea desintoxica para apoyar tu bienestar diario.",
+        "price": 99.96,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23009B3A%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23009B3A%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23009B3A%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23009B3A%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23009B3A%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-DETOX%20X1%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23009B3A%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E8G%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh002",
+        "name": "V-ORGANEX",
+        "category": "Desintoxica",
+        "description": "Producto VitalHealth · presentación 60 CAP.. Línea desintoxica para apoyar tu bienestar diario.",
+        "price": 232.05,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23009B3A%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23009B3A%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23009B3A%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23009B3A%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23009B3A%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-ORGANEX%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23009B3A%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E60%20CAP.%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh003",
+        "name": "V-ITAREN",
+        "category": "Desintoxica",
+        "description": "Producto VitalHealth · presentación 60 CAP.. Línea desintoxica para apoyar tu bienestar diario.",
+        "price": 232.05,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23009B3A%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23009B3A%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23009B3A%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23009B3A%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23009B3A%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-ITAREN%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23009B3A%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E60%20CAP.%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh004",
+        "name": "S-BALANCE",
+        "category": "Restaura",
+        "description": "Producto VitalHealth · presentación 60 CAP.. Línea restaura para apoyar tu bienestar diario.",
+        "price": 232.05,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%235E42B8%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%235E42B8%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%235E42B8%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%235E42B8%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%235E42B8%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3ES-BALANCE%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%235E42B8%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E60%20CAP.%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh005",
+        "name": "V-FOTYFLORA",
+        "category": "Restaura",
+        "description": "Producto VitalHealth · presentación 60 CAP.. Línea restaura para apoyar tu bienestar diario.",
+        "price": 232.05,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%235E42B8%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%235E42B8%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%235E42B8%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%235E42B8%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%235E42B8%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-FOTYFLORA%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%235E42B8%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E60%20CAP.%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh006",
+        "name": "V-ITALAY",
+        "category": "Restaura",
+        "description": "Producto VitalHealth · presentación 60 CAP.. Línea restaura para apoyar tu bienestar diario.",
+        "price": 232.05,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%235E42B8%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%235E42B8%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%235E42B8%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%235E42B8%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%235E42B8%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-ITALAY%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%235E42B8%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E60%20CAP.%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh007",
+        "name": "V-ASCULAX",
+        "category": "Restaura",
+        "description": "Producto VitalHealth · presentación 60 CAP.. Línea restaura para apoyar tu bienestar diario.",
+        "price": 232.05,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%235E42B8%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%235E42B8%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%235E42B8%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%235E42B8%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%235E42B8%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-ASCULAX%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%235E42B8%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E60%20CAP.%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh008",
+        "name": "V-ITADOL",
+        "category": "Restaura",
+        "description": "Producto VitalHealth · presentación 60 CAP.. Línea restaura para apoyar tu bienestar diario.",
+        "price": 232.05,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%235E42B8%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%235E42B8%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%235E42B8%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%235E42B8%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%235E42B8%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-ITADOL%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%235E42B8%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E60%20CAP.%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh009",
+        "name": "V-CONTROL",
+        "category": "Restaura",
+        "description": "Producto VitalHealth · presentación 60 CAP.. Línea restaura para apoyar tu bienestar diario.",
+        "price": 232.05,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%235E42B8%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%235E42B8%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%235E42B8%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%235E42B8%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%235E42B8%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-CONTROL%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%235E42B8%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E60%20CAP.%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh010",
+        "name": "V-ITALBOOST",
+        "category": "Restaura",
+        "description": "Producto VitalHealth · presentación 60 CAP.. Línea restaura para apoyar tu bienestar diario.",
+        "price": 232.05,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%235E42B8%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%235E42B8%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%235E42B8%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%235E42B8%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%235E42B8%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-ITALBOOST%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%235E42B8%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E60%20CAP.%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh011",
+        "name": "V-CURCUMAX",
+        "category": "Restaura",
+        "description": "Producto VitalHealth · presentación 60 CAP.. Línea restaura para apoyar tu bienestar diario.",
+        "price": 232.05,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%235E42B8%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%235E42B8%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%235E42B8%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%235E42B8%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%235E42B8%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-CURCUMAX%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%235E42B8%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E60%20CAP.%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh012",
+        "name": "V-NRGY TROPICAL",
+        "category": "Nutre",
+        "description": "Producto VitalHealth · presentación 90G. Línea nutre para apoyar tu bienestar diario.",
+        "price": 232.05,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23F07C00%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23F07C00%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23F07C00%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23F07C00%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23F07C00%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-NRGY%20TROPICAL%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23F07C00%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E90G%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh013",
+        "name": "V-NITRO",
+        "category": "Desintoxica",
+        "description": "Producto VitalHealth · presentación 50ML. Línea desintoxica para apoyar tu bienestar diario.",
+        "price": 285.6,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23009B3A%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23009B3A%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23009B3A%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23009B3A%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23009B3A%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-NITRO%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23009B3A%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E50ML%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh014",
+        "name": "V-THERMOCAFE",
+        "category": "Café",
+        "description": "Producto VitalHealth · presentación 150G. Línea café para apoyar tu bienestar diario.",
+        "price": 285.6,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23B78B09%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23B78B09%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23B78B09%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23B78B09%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23B78B09%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-THERMOCAFE%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23B78B09%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E150G%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh015",
+        "name": "V-NEUROCAFE",
+        "category": "Café",
+        "description": "Producto VitalHealth · presentación 150G. Línea café para apoyar tu bienestar diario.",
+        "price": 285.6,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23B78B09%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23B78B09%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23B78B09%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23B78B09%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23B78B09%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-NEUROCAFE%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23B78B09%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E150G%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh016",
+        "name": "V-LOVECAFE",
+        "category": "Café",
+        "description": "Producto VitalHealth · presentación 150G. Línea café para apoyar tu bienestar diario.",
+        "price": 285.6,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23B78B09%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23B78B09%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23B78B09%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23B78B09%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23B78B09%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-LOVECAFE%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23B78B09%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E150G%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh017",
+        "name": "V-OMEGA3",
+        "category": "Nutre",
+        "description": "Producto VitalHealth · presentación 90 CAPS. Línea nutre para apoyar tu bienestar diario.",
+        "price": 335.58,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23F07C00%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23F07C00%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23F07C00%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23F07C00%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23F07C00%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-OMEGA3%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23F07C00%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E90%20CAPS%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh018",
+        "name": "VITALAGE COLLAGEN",
+        "category": "Nutre",
+        "description": "Producto VitalHealth · presentación 300G. Línea nutre para apoyar tu bienestar diario.",
+        "price": 357.0,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23F07C00%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23F07C00%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23F07C00%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23F07C00%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23F07C00%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EVITALAGE%20COLLAGEN%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23F07C00%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E300G%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh019",
+        "name": "V-GLUTATION",
+        "category": "Desintoxica",
+        "description": "Producto VitalHealth · presentación 60 CAPS. Línea desintoxica para apoyar tu bienestar diario.",
+        "price": 357.0,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23009B3A%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23009B3A%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23009B3A%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23009B3A%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23009B3A%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-GLUTATION%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23009B3A%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E60%20CAPS%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh020",
+        "name": "V-DAILY",
+        "category": "Nutre",
+        "description": "Producto VitalHealth · presentación 150G. Línea nutre para apoyar tu bienestar diario.",
+        "price": 392.7,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23F07C00%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23F07C00%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23F07C00%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23F07C00%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23F07C00%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-DAILY%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23F07C00%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E150G%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh021",
+        "name": "D-FENZ KIDS",
+        "category": "Niños",
+        "description": "Producto VitalHealth · presentación 135G. Línea niños para apoyar tu bienestar diario.",
+        "price": 249.9,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%237A49B7%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%237A49B7%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%237A49B7%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%237A49B7%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%237A49B7%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3ED-FENZ%20KIDS%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%237A49B7%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E135G%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh022",
+        "name": "SMARTBIOTICS KIDS",
+        "category": "Niños",
+        "description": "Producto VitalHealth · presentación 150G. Línea niños para apoyar tu bienestar diario.",
+        "price": 249.9,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%237A49B7%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%237A49B7%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%237A49B7%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%237A49B7%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%237A49B7%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3ESMARTBIOTICS%20KIDS%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%237A49B7%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E150G%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh023",
+        "name": "PERFORMANCE+",
+        "category": "Nutre",
+        "description": "Producto VitalHealth · presentación 420G. Línea nutre para apoyar tu bienestar diario.",
+        "price": 392.7,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23F07C00%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23F07C00%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23F07C00%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23F07C00%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23F07C00%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EPERFORMANCE%2B%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23F07C00%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E420G%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh024",
+        "name": "GENIUS SHAKE KIDS",
+        "category": "Niños",
+        "description": "Producto VitalHealth · presentación 400G. Línea niños para apoyar tu bienestar diario.",
+        "price": 392.7,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%237A49B7%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%237A49B7%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%237A49B7%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%237A49B7%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%237A49B7%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EGENIUS%20SHAKE%20KIDS%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%237A49B7%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E400G%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh025",
+        "name": "NOURISH+",
+        "category": "Nutre",
+        "description": "Producto VitalHealth · presentación 450G. Línea nutre para apoyar tu bienestar diario.",
+        "price": 392.7,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23F07C00%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23F07C00%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23F07C00%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23F07C00%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23F07C00%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3ENOURISH%2B%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23F07C00%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E450G%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh026",
+        "name": "LATTEKAFFE",
+        "category": "Café",
+        "description": "Producto VitalHealth · presentación 330G. Línea café para apoyar tu bienestar diario.",
+        "price": 285.6,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23B78B09%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23B78B09%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23B78B09%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23B78B09%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23B78B09%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3ELATTEKAFFE%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23B78B09%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E330G%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh027",
+        "name": "VITALPRO",
+        "category": "Nutre",
+        "description": "Producto VitalHealth · presentación 300G. Línea nutre para apoyar tu bienestar diario.",
+        "price": 335.58,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23F07C00%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23F07C00%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23F07C00%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23F07C00%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23F07C00%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EVITALPRO%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23F07C00%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E300G%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    },
+    {
+        "id": "vh028",
+        "name": "V-GLUTATION PLUS",
+        "category": "Desintoxica",
+        "description": "Producto VitalHealth · presentación 50ML. Línea desintoxica para apoyar tu bienestar diario.",
+        "price": 392.7,
+        "salePrice": null,
+        "image": "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%20800%20800%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f7fff9%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e4f7ea%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22655%22%20cy%3D%22140%22%20r%3D%2295%22%20fill%3D%22%23009B3A%22%20opacity%3D%220.12%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22690%22%20r%3D%22120%22%20fill%3D%22%23009B3A%22%20opacity%3D%220.10%22/%3E%3Cpath%20d%3D%22M190%20170%20L250%20170%20L210%20295%20Z%22%20fill%3D%22%23009B3A%22/%3E%3Cpath%20d%3D%22M255%20160%20C300%20115%20365%20115%20410%20160%20C360%20220%20305%20225%20255%20160Z%22%20fill%3D%22%23009B3A%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22330%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22700%22%20fill%3D%22%23009B3A%22%3EVITALHEALTH%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22420%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2250%22%20font-weight%3D%22700%22%20fill%3D%22%23123524%22%3EV-GLUTATION%20PLUS%3C/text%3E%3Crect%20x%3D%22255%22%20y%3D%22465%22%20width%3D%22290%22%20height%3D%2258%22%20rx%3D%2229%22%20fill%3D%22%23009B3A%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%3E50ML%3C/text%3E%3Ctext%20x%3D%22400%22%20y%3D%22610%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2230%22%20fill%3D%22%23496157%22%3EMarca%20VitalHealth%3C/text%3E%3C/svg%3E",
+        "badge": "VITALHEALTH",
+        "inStock": true
+    }
+];
+
+  /* ============================================================
+     FIN DE LA SECCIÓN DE DATOS
+  ============================================================ */
+
+  /* ── Estado reactivo del carrito ─────────────────────────── */
+  let cart = [];               // Array de { product, qty }
+  let activeFilter = "Todos";
+  let activePayment = storeConfig.paymentMethods[0] || "Efectivo";
+
+  /* ── Helpers ─────────────────────────────────────────────── */
+  const $ = (sel, ctx = document) => ctx.querySelector(sel);
+  const fmt = n => `${storeConfig.currency} ${n.toFixed(2)}`;
+
+  function effectivePrice(p) {
+    return p.salePrice !== null && p.salePrice !== undefined ? p.salePrice : p.price;
+  }
+
+  /* ── Inicialización ──────────────────────────────────────── */
+  function init() {
+    applyStoreConfig();
+    buildFilters();
+    renderProducts(products);
+    buildPaymentOptions();
+    bindEvents();
+  }
+
+  function applyStoreConfig() {
+    /* Nombre */
+    $('#store-name-nav').innerHTML   = storeConfig.name.replace(/(\.)$/, '<span>$1</span>') + '<span>.</span>';
+    $('#store-name-nav').innerHTML   = storeConfig.name + '<span>.</span>';
+    $('#store-name-footer').textContent = storeConfig.name + '.';
+    $('#footer-copy').textContent    = storeConfig.footerText;
+    /* Hero */
+    $('#hero-title').innerHTML       = storeConfig.hero.title;
+    $('#hero-subtitle').textContent  = storeConfig.hero.subtitle;
+    const heroImg = $('#hero-image');
+    heroImg.src = storeConfig.hero.image;
+    heroImg.alt = storeConfig.name;
+  }
+
+  /* ── Filtros ─────────────────────────────────────────────── */
+  function buildFilters() {
+    const categories = ["Todos", ...new Set(products.map(p => p.category))];
+    const wrap = $('#filters-wrap');
+    // Limpiar botones previos (mantener el label)
+    wrap.querySelectorAll('.filter-btn').forEach(b => b.remove());
+    categories.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-btn' + (cat === activeFilter ? ' active' : '');
+      btn.textContent = cat;
+      btn.dataset.filter = cat;
+      btn.addEventListener('click', () => {
+        activeFilter = cat;
+        wrap.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === cat));
+        const filtered = cat === 'Todos' ? products : products.filter(p => p.category === cat);
+        renderProducts(filtered);
+      });
+      wrap.appendChild(btn);
+    });
+  }
+
+  /* ── Render del catálogo ─────────────────────────────────── */
+  function renderProducts(list) {
+    const grid = $('#products-grid');
+    grid.innerHTML = '';
+    $('#product-count').textContent = `${list.length} producto${list.length !== 1 ? 's' : ''}`;
+
+    list.forEach((p, i) => {
+      const hasOffer = p.salePrice !== null && p.salePrice !== undefined;
+      const card = document.createElement('article');
+      card.className = 'product-card' + (!p.inStock ? ' out-of-stock' : '');
+      card.style.animationDelay = `${i * 40}ms`;
+      card.dataset.id = p.id;
+
+      card.innerHTML = `
+        <div class="product-image-wrap">
+          <img src="${p.image}" alt="${p.name}" loading="lazy" />
+          ${hasOffer ? `<span class="badge-offer">${p.badge || 'OFERTA'}</span>` : ''}
+          ${p.badge && !hasOffer ? `<span class="badge-new">${p.badge}</span>` : ''}
+        </div>
+        <div class="product-info">
+          <span class="product-category">${p.category}</span>
+          <h3 class="product-name">${p.name}</h3>
+          ${p.description ? `<p class="product-desc">${p.description}</p>` : ''}
+          <div class="product-pricing">
+            ${hasOffer
+              ? `<span class="price-sale">${fmt(p.salePrice)}</span>
+                 <span class="price-original">${fmt(p.price)}</span>`
+              : `<span class="price-regular">${fmt(p.price)}</span>`
+            }
+          </div>
+        </div>
+        <button class="btn-add" data-id="${p.id}" ${!p.inStock ? 'disabled' : ''}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          <span>${p.inStock ? 'Agregar al carrito' : 'Agotado'}</span>
+        </button>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  /* ── Métodos de pago ─────────────────────────────────────── */
+  function buildPaymentOptions() {
+    const wrap = $('#payment-options');
+    storeConfig.paymentMethods.forEach(method => {
+      const btn = document.createElement('button');
+      btn.className = 'pay-opt' + (method === activePayment ? ' active' : '');
+      btn.textContent = method;
+      btn.dataset.payment = method;
+      btn.addEventListener('click', () => {
+        activePayment = method;
+        wrap.querySelectorAll('.pay-opt').forEach(b => b.classList.toggle('active', b.dataset.payment === method));
+      });
+      wrap.appendChild(btn);
+    });
+  }
+
+  /* ── Carrito: lógica ─────────────────────────────────────── */
+  function addToCart(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product || !product.inStock) return;
+    const item = cart.find(c => c.product.id === productId);
+    if (item) {
+      item.qty += 1;
+    } else {
+      cart.push({ product, qty: 1 });
+    }
+    updateCartUI();
+    showToast(`✓ ${product.name} agregado al carrito`);
+
+    /* Feedback visual en el botón */
+    const btn = document.querySelector(`.btn-add[data-id="${productId}"]`);
+    if (btn) {
+      btn.classList.add('added');
+      btn.querySelector('span').textContent = '¡Agregado!';
+      setTimeout(() => {
+        btn.classList.remove('added');
+        btn.querySelector('span').textContent = 'Agregar al carrito';
+      }, 1800);
+    }
+
+    /* Bump en el ícono del carrito */
+    const countEl = $('#cart-count');
+    countEl.classList.remove('bump');
+    void countEl.offsetWidth; // reflow para reiniciar animación
+    countEl.classList.add('bump');
+  }
+
+  function removeFromCart(productId) {
+    cart = cart.filter(c => c.product.id !== productId);
+    updateCartUI();
+  }
+
+  function changeQty(productId, delta) {
+    const item = cart.find(c => c.product.id === productId);
+    if (!item) return;
+    item.qty += delta;
+    if (item.qty <= 0) removeFromCart(productId);
+    else updateCartUI();
+  }
+
+  function cartTotal() {
+    return cart.reduce((sum, c) => sum + effectivePrice(c.product) * c.qty, 0);
+  }
+
+  /* ── Carrito: render ─────────────────────────────────────── */
+  function updateCartUI() {
+    const totalItems = cart.reduce((s, c) => s + c.qty, 0);
+    $('#cart-count').textContent = totalItems;
+
+    const itemsEl   = $('#cart-items');
+    const footerEl  = $('#cart-footer');
+    const totalEl   = $('#cart-total');
+    const checkoutBtn = $('#btn-checkout');
+
+    if (cart.length === 0) {
+      itemsEl.innerHTML = `
+        <div class="cart-empty">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 001.99-1.81l1.38-9.39H6"/>
+          </svg>
+          <p>Tu carrito está vacío.<br/>¡Explora el catálogo!</p>
+        </div>`;
+      footerEl.style.display = 'none';
+      return;
+    }
+
+    footerEl.style.display = 'flex';
+    checkoutBtn.disabled = false;
+
+    itemsEl.innerHTML = cart.map(({ product: p, qty }) => `
+      <div class="cart-item" data-id="${p.id}">
+        <div class="cart-item-img">
+          <img src="${p.image}" alt="${p.name}" loading="lazy" />
+        </div>
+        <div>
+          <div class="cart-item-name">${p.name}</div>
+          <div class="cart-item-price">${fmt(effectivePrice(p))} c/u</div>
+          <div class="qty-ctrl">
+            <button class="qty-btn" data-action="dec" data-id="${p.id}">−</button>
+            <span class="qty-num">${qty}</span>
+            <button class="qty-btn" data-action="inc" data-id="${p.id}">+</button>
+          </div>
+        </div>
+        <button class="item-remove" data-id="${p.id}" aria-label="Eliminar">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14H6L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4h6v2"/>
+          </svg>
+        </button>
+      </div>
+    `).join('');
+
+    totalEl.textContent = fmt(cartTotal());
+  }
+
+  /* ── Checkout por WhatsApp ───────────────────────────────── */
+  function checkout() {
+    if (cart.length === 0) return;
+
+    const itemLines = cart.map(({ product: p, qty }) =>
+      `• ${qty}x ${p.name} (${fmt(effectivePrice(p))} c/u = ${fmt(effectivePrice(p) * qty)})`
+    ).join('\n');
+
+    const message =
+`Hola, quiero realizar el siguiente pedido de ${storeConfig.name}:
+
+${itemLines}
+
+💰 *Total: ${fmt(cartTotal())}*
+💳 Método de pago: ${activePayment}
+
+Quedo atento/a a su confirmación. ¡Gracias! 🙏`;
+
+    const encoded = encodeURIComponent(message);
+    const url = `https://wa.me/${storeConfig.whatsapp}?text=${encoded}`;
+    window.open(url, '_blank');
+  }
+
+  /* ── Toast ───────────────────────────────────────────────── */
+  function showToast(msg, duration = 2500) {
+    const wrap = $('#toast-wrap');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = msg;
+    wrap.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.add('out');
+      setTimeout(() => toast.remove(), 350);
+    }, duration);
+  }
+
+  /* ── Delegación de eventos ───────────────────────────────── */
+  function bindEvents() {
+    /* Abrir / cerrar carrito */
+    $('#open-cart').addEventListener('click', () => openCart());
+    $('#close-cart').addEventListener('click', closeCart);
+    $('#cart-overlay').addEventListener('click', closeCart);
+
+    /* Escape key */
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeCart();
+    });
+
+    /* Agregar al carrito (delegación en el grid) */
+    $('#products-grid').addEventListener('click', e => {
+      const btn = e.target.closest('.btn-add');
+      if (btn) addToCart(btn.dataset.id);
+    });
+
+    /* Acciones dentro del carrito */
+    $('#cart-items').addEventListener('click', e => {
+      const qtyBtn = e.target.closest('.qty-btn');
+      const removeBtn = e.target.closest('.item-remove');
+      if (qtyBtn) {
+        const id = qtyBtn.dataset.id;
+        changeQty(id, qtyBtn.dataset.action === 'inc' ? 1 : -1);
+      }
+      if (removeBtn) removeFromCart(removeBtn.dataset.id);
+    });
+
+    /* Checkout */
+    $('#btn-checkout').addEventListener('click', checkout);
+  }
+
+  function openCart() {
+    $('#cart-panel').classList.add('open');
+    $('#cart-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    updateCartUI();
+  }
+  function closeCart() {
+    $('#cart-panel').classList.remove('open');
+    $('#cart-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  /* ── Arranque ────────────────────────────────────────────── */
+  document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
